@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bea's Celebrity Spotter — La Guérite</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f4ede1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 52px 24px 64px;
+    }
+
+    /* ── Header ── */
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #fe3956;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(2.6rem, 6.5vw, 4.2rem);
+      font-weight: 800;
+      color: #0b2240;
+      line-height: 1.08;
+      letter-spacing: -1px;
+      margin-bottom: 14px;
+    }
+
+    h1 em {
+      font-style: italic;
+      font-weight: 300;
+      color: #fe3956;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: #0b2240;
+      opacity: 0.45;
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: 0.2px;
+    }
+
+    .counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 22px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #0b2240;
+      background: #fff;
+      border: 1.5px solid rgba(11,34,64,0.1);
+      padding: 7px 18px;
+      border-radius: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      letter-spacing: 0.3px;
+    }
+
+    .counter-dot {
+      width: 7px;
+      height: 7px;
+      background: #fe3956;
+      border-radius: 50%;
+      animation: blink 2.2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.75); }
+    }
+
+    /* ── Pool wrapper ── */
+
+    .pool-container {
+      width: 100%;
+      max-width: 920px;
+    }
+
+    .pool-label-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      padding: 0 2px;
+    }
+
+    .pool-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #0b2240;
+      opacity: 0.35;
+      white-space: nowrap;
+    }
+
+    .pool-rule {
+      flex: 1;
+      height: 1px;
+      background: #0b2240;
+      opacity: 0.1;
+    }
+
+    /* ── The Pool ── */
+
+    .pool {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      border-radius: 36px;
+      overflow: hidden;
+      cursor: default;
+      /* animated water gradient */
+      background: linear-gradient(-50deg, #aadff5, #c4eefb, #90cfe8, #b8eaf8, #caf4fd, #9ad5ec);
+      background-size: 400% 400%;
+      animation: waterShimmer 9s ease infinite;
+      box-shadow:
+        inset 0 14px 32px rgba(0, 50, 90, 0.18),
+        inset 0 -10px 24px rgba(255, 255, 255, 0.45),
+        inset 4px 0  16px rgba(0, 50, 90, 0.06),
+        inset -4px 0 16px rgba(0, 50, 90, 0.06),
+        0 8px 32px rgba(0, 50, 90, 0.14);
+    }
+
+    @keyframes waterShimmer {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* subtle pool-tile grid at the bottom */
+    .pool::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+    }
+
+    /* glossy top sheen */
+    .pool::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 100px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.28), transparent);
+      border-radius: 36px 36px 0 0;
+      pointer-events: none;
+    }
+
+    /* ── Celebrity bubble ── */
+
+    .celebrity {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .circle {
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid rgba(255, 255, 255, 0.92);
+      box-shadow:
+        0 10px 28px rgba(0, 30, 60, 0.22),
+        0 3px 8px  rgba(0, 30, 60, 0.12),
+        inset 0 -4px 10px rgba(0, 30, 60, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.35s ease;
+      position: relative;
+    }
+
+    .circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* mystery circle */
+    .mystery .circle {
+      background: linear-gradient(135deg, #0b2240 0%, #411992 60%, #1a3a6b 100%);
+      background-size: 200% 200%;
+      animation: mysteryShift 5s ease-in-out infinite;
+    }
+
+    @keyframes mysteryShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .question-mark {
+      font-size: 3.2rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.88);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.35);
+      animation: questionPulse 2.8s ease-in-out infinite;
+      user-select: none;
+      line-height: 1;
+    }
+
+    @keyframes questionPulse {
+      0%, 100% { transform: scale(1);    opacity: 0.88; }
+      50%       { transform: scale(1.18); opacity: 1; }
+    }
+
+    .celeb-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #0b2240;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 4px 13px;
+      border-radius: 20px;
+      white-space: nowrap;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      letter-spacing: 0.2px;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  background 0.3s ease,
+                  box-shadow 0.3s ease;
+    }
+
+    /* ── Float keyframes (6 distinct paths) ── */
+
+    @keyframes float1 {
+      0%   { transform: translate(  0px,   0px); }
+      15%  { transform: translate( 28px, -34px); }
+      35%  { transform: translate(-18px, -52px); }
+      55%  { transform: translate(-38px, -22px); }
+      75%  { transform: translate( 14px, -44px); }
+      100% { transform: translate(  0px,   0px); }
+    }
+    @keyframes float2 {
+      0%   { transform: translate(  0px,   0px); }
+      25%  { transform: translate(-32px, -28px); }
+      50%  { transform: translate( 24px, -48px); }
+      75%  { transform: translate(-12px, -16px); }
+      100% { transform: translate(  0px,   0px); }
+    }
+    @keyframes float3 {
+      0%   { transform: translate(  0px,   0px); }
+      33%  { transform: translate( 42px, -24px); }
+      66%  { transform: translate(-22px, -44px); }
+      100% { transform: translate(  0px,   0px); }
+    }
+    @keyframes float4 {
+      0%   { transform: translate(  0px,   0px); }
+      20%  { transform: translate(-44px, -12px); }
+      40%  { transform: translate(  8px, -50px); }
+      60%  { transform: translate( 36px, -26px); }
+      80%  { transform: translate(-16px, -32px); }
+      100% { transform: translate(  0px,   0px); }
+    }
+    @keyframes float5 {
+      0%   { transform: translate(  0px,   0px); }
+      30%  { transform: translate( 22px, -42px); }
+      60%  { transform: translate(-34px, -18px); }
+      100% { transform: translate(  0px,   0px); }
+    }
+    @keyframes float6 {
+      0%   { transform: translate(  0px,   0px); }
+      18%  { transform: translate( 38px, -38px); }
+      40%  { transform: translate(-26px, -14px); }
+      62%  { transform: translate( 16px, -52px); }
+      82%  { transform: translate(-42px, -28px); }
+      100% { transform: translate(  0px,   0px); }
+    }
+
+    .float-1 { animation: float1  9s ease-in-out infinite; }
+    .float-2 { animation: float2 11s ease-in-out infinite; }
+    .float-3 { animation: float3  7s ease-in-out infinite; }
+    .float-4 { animation: float4 13s ease-in-out infinite; }
+    .float-5 { animation: float5  8s ease-in-out infinite; }
+    .float-6 { animation: float6 10s ease-in-out infinite; }
+
+    /* ── Hover interaction ── */
+
+    /* hovering the pool freezes every bubble */
+    .pool:hover .celebrity,
+    .pool:hover .celebrity * {
+      animation-play-state: paused;
+    }
+
+    /* the bubble under the cursor pops forward */
+    .pool:hover .celebrity:hover {
+      z-index: 10;
+    }
+
+    .pool:hover .celebrity:hover .circle {
+      transform: scale(1.28);
+      box-shadow:
+        0 18px 44px rgba(0, 30, 60, 0.38),
+        0 6px 14px rgba(0, 30, 60, 0.2),
+        inset 0 -4px 10px rgba(0, 30, 60, 0.08);
+    }
+
+    .pool:hover .celebrity:hover .celeb-name {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.14);
+    }
+
+    /* ── Mobile ── */
+
+    @media (max-width: 600px) {
+      body {
+        padding: 36px 14px 48px;
+      }
+
+      header {
+        margin-bottom: 32px;
+      }
+
+      .pool {
+        height: 420px;
+        border-radius: 26px;
+      }
+
+      .pool::after {
+        border-radius: 26px 26px 0 0;
+      }
+
+      .circle {
+        width: 86px;
+        height: 86px;
+      }
+
+      .question-mark {
+        font-size: 2.5rem;
+      }
+
+      .celeb-name {
+        font-size: 0.72rem;
+        padding: 3px 10px;
+      }
+    }
+
+    /* ── Touch interaction (mirrors hover for mobile) ── */
+
+    .pool.pool-touched .celebrity,
+    .pool.pool-touched .celebrity * {
+      animation-play-state: paused;
+    }
+
+    .pool.pool-touched .celebrity.touched {
+      z-index: 10;
+    }
+
+    .pool.pool-touched .celebrity.touched .circle {
+      transform: scale(1.28);
+      box-shadow:
+        0 18px 44px rgba(0, 30, 60, 0.38),
+        0 6px 14px rgba(0, 30, 60, 0.2),
+        inset 0 -4px 10px rgba(0, 30, 60, 0.08);
+    }
+
+    .pool.pool-touched .celebrity.touched .celeb-name {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.14);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge">&#9733; La Guérite</div>
+    <h1>Bea's Celebrity <em>Spotter</em></h1>
+    <p class="subtitle">Keeping track of the stars who graced our tables</p>
+    <div class="counter">
+      <span class="counter-dot"></span>
+      <span id="counter-text">No celebrities spotted yet</span>
+    </div>
+  </header>
+
+  <div class="pool-container">
+    <div class="pool-label-row">
+      <span class="pool-label">The Pool</span>
+      <div class="pool-rule"></div>
+    </div>
+
+    <div class="pool" id="pool">
+
+      <!--
+        ╔══════════════════════════════════════════════════════════════╗
+        ║  HOW TO ADD A NEW CELEBRITY                                  ║
+        ║                                                              ║
+        ║  1. Copy the block below and paste it inside #pool           ║
+        ║  2. Give it a float class: float-1 through float-6           ║
+        ║     (pick a different one from the others for variety)       ║
+        ║  3. Set a starting position with style="left: X%; top: Y%"  ║
+        ║     Keep left between 5%–75% and top between 5%–55%         ║
+        ║     so the bubble stays inside the pool.                     ║
+        ║  4. Replace src with a photo URL or local path               ║
+        ║  5. Update the name in .celeb-name                           ║
+        ║                                                              ║
+        ║  Example:                                                    ║
+        ║  <div class="celebrity float-2" style="left:20%;top:30%">   ║
+        ║    <div class="circle">                                      ║
+        ║      <img src="photo.jpg" alt="Name">                       ║
+        ║    </div>                                                    ║
+        ║    <div class="celeb-name">First Last</div>                  ║
+        ║  </div>                                                      ║
+        ╚══════════════════════════════════════════════════════════════╝
+      -->
+
+      <!-- Mystery placeholder — always keep this one last -->
+      <div class="celebrity mystery float-1" style="left: calc(50% - 56px); top: calc(50% - 85px);">
+        <div class="circle">
+          <span class="question-mark">?</span>
+        </div>
+        <div class="celeb-name">Who's next...</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function updateCounter() {
+      const total = document.querySelectorAll('#pool .celebrity:not(.mystery)').length;
+      const el = document.getElementById('counter-text');
+      if (total === 0)      el.textContent = 'No celebrities spotted yet';
+      else if (total === 1) el.textContent = '1 celebrity spotted';
+      else                  el.textContent = total + ' celebrities spotted';
+    }
+    updateCounter();
+
+    // Touch interaction: tap a bubble to freeze & zoom; tap again or tap pool to release
+    const pool = document.getElementById('pool');
+    pool.addEventListener('click', function(e) {
+      const bubble = e.target.closest('.celebrity');
+      if (bubble) {
+        if (bubble.classList.contains('touched')) {
+          pool.classList.remove('pool-touched');
+          bubble.classList.remove('touched');
+        } else {
+          pool.querySelectorAll('.celebrity.touched').forEach(b => b.classList.remove('touched'));
+          pool.classList.add('pool-touched');
+          bubble.classList.add('touched');
+        }
+      } else {
+        pool.classList.remove('pool-touched');
+        pool.querySelectorAll('.celebrity.touched').forEach(b => b.classList.remove('touched'));
+      }
+    });
+  </script>
+
+</body>
+</html>
