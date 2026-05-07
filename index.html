@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bea's Celebrity Spotter — La Guérite</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕶️</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after {
@@ -498,6 +498,7 @@
     <div class="pool-label-row">
       <span class="pool-label" id="pool-label">The Pool</span>
       <div class="pool-rule"></div>
+      <button class="year-btn" id="year-btn-top">2025 ↩</button>
     </div>
 
     <div class="pool-scene" id="pool-scene">
@@ -733,20 +734,27 @@
     attachTouchInteraction(document.getElementById('pool-back'), backPhysics);
 
     // Year flip
-    const scene   = document.getElementById('pool-scene');
-    const yearBtn = document.getElementById('year-btn');
-    const label   = document.getElementById('pool-label');
-    yearBtn.addEventListener('click', function() {
+    const scene      = document.getElementById('pool-scene');
+    const yearBtn    = document.getElementById('year-btn');
+    const yearBtnTop = document.getElementById('year-btn-top');
+    const label      = document.getElementById('pool-label');
+
+    function doFlip() {
       const flipping = !scene.classList.contains('flipped');
       scene.classList.toggle('flipped', flipping);
       if (flipping) {
-        yearBtn.textContent = '↩ 2026';
-        label.textContent   = '2025';
+        yearBtn.textContent    = '↩ 2026';
+        yearBtnTop.textContent = '↩ 2026';
+        label.textContent      = '2025';
       } else {
-        yearBtn.textContent = '2025 ↩';
-        label.textContent   = 'The Pool';
+        yearBtn.textContent    = '2025 ↩';
+        yearBtnTop.textContent = '2025 ↩';
+        label.textContent      = 'The Pool';
       }
-    });
+    }
+
+    yearBtn.addEventListener('click', doFlip);
+    yearBtnTop.addEventListener('click', doFlip);
   </script>
 
 </body>
