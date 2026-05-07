@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bea's Celebrity Spotter — La Guérite</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕶️</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after {
@@ -179,6 +180,70 @@
       pointer-events: none;
     }
 
+    /* ── Year flip ── */
+
+    .pool-scene {
+      position: relative;
+      height: 500px;
+      perspective: 1400px;
+    }
+
+    .pool-flipper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.75s cubic-bezier(0.4, 0.2, 0.2, 1);
+    }
+
+    .pool-scene.flipped .pool-flipper {
+      transform: rotateY(180deg);
+    }
+
+    /* override pool's own height/position when inside the scene */
+    .pool-scene .pool {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .pool-front,
+    .pool-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .pool-back {
+      transform: rotateY(180deg);
+      /* warmer green-teal water for last season */
+      background: linear-gradient(-50deg, #8ecfa8, #aae0c0, #74b898, #9ed8b4, #b8f0d0, #86c8a8);
+      background-size: 400% 400%;
+      animation: waterShimmer 11s ease infinite;
+    }
+
+    .year-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #0b2240;
+      opacity: 0.35;
+      padding: 4px 0;
+      transition: opacity 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .year-btn:hover {
+      opacity: 0.7;
+    }
+
     /* ── Celebrity bubble ── */
 
     .celebrity {
@@ -352,12 +417,20 @@
         margin-bottom: 32px;
       }
 
-      .pool {
+      .pool-scene {
         height: 420px;
+      }
+
+      .pool {
         border-radius: 26px;
         /* static gradient on mobile — background-position animation causes repaints */
         animation: none;
         background: #b8eaf8;
+      }
+
+      .pool-back {
+        background: #96c8a8;
+        animation: none;
       }
 
       .pool::after {
@@ -423,11 +496,14 @@
 
   <div class="pool-container">
     <div class="pool-label-row">
-      <span class="pool-label">The Pool</span>
+      <span class="pool-label" id="pool-label">The Pool</span>
       <div class="pool-rule"></div>
     </div>
 
-    <div class="pool" id="pool">
+    <div class="pool-scene" id="pool-scene">
+      <div class="pool-flipper">
+
+    <div class="pool pool-front" id="pool">
 
       <!--
         ╔══════════════════════════════════════════════════════════════╗
@@ -460,6 +536,72 @@
         <div class="celeb-name">Who's next...</div>
       </div>
 
+    </div><!-- /pool-front -->
+
+    <!--
+      ╔══════════════════════════════════════════════════════════════╗
+      ║  LAST SEASON'S POOL (2025)                                   ║
+      ║  Add celebrities here the same way as the front pool.        ║
+      ╚══════════════════════════════════════════════════════════════╝
+    -->
+    <div class="pool pool-back" id="pool-back">
+
+      <div class="celebrity float-2" style="left:5%;top:8%;">
+        <div class="circle">
+          <img src="assets/optimized/gordon.webp" alt="Gordon Ramsay" style="object-position: center top;">
+        </div>
+        <div class="celeb-name">Gordon Ramsay</div>
+      </div>
+
+      <div class="celebrity float-4" style="left:38%;top:5%;">
+        <div class="circle">
+          <img src="assets/optimized/eltonjohn.jpg" alt="Elton John" style="object-position: center top;">
+        </div>
+        <div class="celeb-name">Elton John</div>
+      </div>
+
+      <div class="celebrity float-6" style="left:calc(50% - 68px);top:calc(50% - 95px);z-index:2;">
+        <div class="circle" style="width:136px;height:136px;">
+          <img src="assets/optimized/beckham.jpg" alt="David Beckham" style="object-position: right top;">
+        </div>
+        <div class="celeb-name">David Beckham</div>
+      </div>
+
+      <div class="celebrity float-1" style="left:68%;top:6%;">
+        <div class="circle">
+          <img src="assets/optimized/dicaprio.webp" alt="Leonardo DiCaprio" style="object-position: center top;">
+        </div>
+        <div class="celeb-name">Leonardo DiCaprio</div>
+      </div>
+
+      <div class="celebrity float-5" style="left:62%;top:44%;">
+        <div class="circle">
+          <img src="assets/optimized/vandijk.jpg" alt="Virgil Van Dijk" style="object-position: center top;">
+        </div>
+        <div class="celeb-name">Virgil Van Dijk</div>
+      </div>
+
+      <div class="celebrity float-3" style="left:20%;top:50%;">
+        <div class="circle">
+          <img src="assets/optimized/mbappe.jpeg" alt="Kylian Mbappé" style="object-position: center top;">
+        </div>
+        <div class="celeb-name">Kylian Mbappé</div>
+      </div>
+
+      <div class="celebrity float-4" style="left:5%;top:36%;">
+        <div class="circle">
+          <img src="assets/optimized/lebron.avif" alt="LeBron James" style="object-position: center top;">
+        </div>
+        <div class="celeb-name">LeBron James</div>
+      </div>
+
+    </div><!-- /pool-back -->
+
+      </div><!-- /pool-flipper -->
+    </div><!-- /pool-scene -->
+
+    <div style="text-align:center;margin-top:18px;">
+      <button class="year-btn" id="year-btn">2025 ↩</button>
     </div>
   </div>
 
@@ -473,22 +615,136 @@
     }
     updateCounter();
 
-    // Touch interaction: tap a bubble to freeze & zoom; tap again or tap pool to release
-    const pool = document.getElementById('pool');
-    pool.addEventListener('click', function(e) {
-      const bubble = e.target.closest('.celebrity');
-      if (bubble) {
-        if (bubble.classList.contains('touched')) {
-          pool.classList.remove('pool-touched');
-          bubble.classList.remove('touched');
-        } else {
-          pool.querySelectorAll('.celebrity.touched').forEach(b => b.classList.remove('touched'));
-          pool.classList.add('pool-touched');
-          bubble.classList.add('touched');
+    // Parse inline left/top values: handles %, px, calc(X% - Ypx)
+    function parseCSSLength(val, total) {
+      val = (val || '').trim();
+      if (val.endsWith('%')) return parseFloat(val) / 100 * total;
+      const m = val.match(/calc\((\d+(?:\.\d+)?)%\s*([+-])\s*(\d+(?:\.\d+)?)px\)/);
+      if (m) return parseFloat(m[1]) / 100 * total + parseFloat(m[3]) * (m[2] === '-' ? -1 : 1);
+      return parseFloat(val) || 0;
+    }
+
+    function initPhysics(poolEl) {
+      const W = poolEl.offsetWidth;
+      const H = poolEl.offsetHeight;
+      const LABEL_PAD = 38; // room for name label below circle
+      const SPEED = 65;     // px/s
+      let paused = false;
+      let lastTime = null;
+
+      const state = Array.from(poolEl.querySelectorAll('.celebrity')).map(el => {
+        const circleEl = el.querySelector('.circle');
+        const r  = circleEl.offsetWidth / 2;
+        const cx = parseCSSLength(el.style.left, W) + r;
+        const cy = parseCSSLength(el.style.top,  H) + r;
+        const angle = Math.random() * Math.PI * 2;
+        el.style.animation = 'none';
+        el.style.left = '0';
+        el.style.top  = '0';
+        return { el, r, cx, cy,
+          vx: Math.cos(angle) * SPEED,
+          vy: Math.sin(angle) * SPEED };
+      });
+
+      function step(ts) {
+        requestAnimationFrame(step);
+        if (paused) { lastTime = null; return; }
+        if (!lastTime) { lastTime = ts; return; }
+        const dt = Math.min((ts - lastTime) / 1000, 0.05);
+        lastTime = ts;
+
+        for (const b of state) {
+          b.cx += b.vx * dt;
+          b.cy += b.vy * dt;
         }
+
+        // Wall bounce
+        for (const b of state) {
+          if (b.cx - b.r < 0)             { b.cx = b.r;                  b.vx =  Math.abs(b.vx); }
+          if (b.cx + b.r > W)             { b.cx = W - b.r;              b.vx = -Math.abs(b.vx); }
+          if (b.cy - b.r < 0)             { b.cy = b.r;                  b.vy =  Math.abs(b.vy); }
+          if (b.cy + b.r + LABEL_PAD > H) { b.cy = H - b.r - LABEL_PAD; b.vy = -Math.abs(b.vy); }
+        }
+
+        // Bubble–bubble elastic collision
+        for (let i = 0; i < state.length; i++) {
+          for (let j = i + 1; j < state.length; j++) {
+            const a = state[i], b = state[j];
+            const dx = b.cx - a.cx, dy = b.cy - a.cy;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            const minD = a.r + b.r;
+            if (d < minD && d > 0) {
+              const nx = dx / d, ny = dy / d;
+              const push = (minD - d) * 0.5;
+              a.cx -= nx * push; a.cy -= ny * push;
+              b.cx += nx * push; b.cy += ny * push;
+              const relv = (a.vx - b.vx) * nx + (a.vy - b.vy) * ny;
+              if (relv > 0) {
+                a.vx -= relv * nx; a.vy -= relv * ny;
+                b.vx += relv * nx; b.vy += relv * ny;
+              }
+            }
+          }
+        }
+
+        for (const b of state) {
+          b.el.style.transform = `translate(${b.cx - b.r}px, ${b.cy - b.r}px)`;
+        }
+      }
+
+      requestAnimationFrame(step);
+
+      poolEl.addEventListener('mouseenter', () => { paused = true; });
+      poolEl.addEventListener('mouseleave', () => {
+        if (!poolEl.classList.contains('pool-touched')) paused = false;
+      });
+
+      return {
+        pause()  { paused = true; },
+        resume() { paused = false; lastTime = null; }
+      };
+    }
+
+    function attachTouchInteraction(poolEl, physics) {
+      poolEl.addEventListener('click', function(e) {
+        const bubble = e.target.closest('.celebrity');
+        if (bubble) {
+          if (bubble.classList.contains('touched')) {
+            poolEl.classList.remove('pool-touched');
+            bubble.classList.remove('touched');
+            physics.resume();
+          } else {
+            poolEl.querySelectorAll('.celebrity.touched').forEach(b => b.classList.remove('touched'));
+            poolEl.classList.add('pool-touched');
+            bubble.classList.add('touched');
+            physics.pause();
+          }
+        } else {
+          poolEl.classList.remove('pool-touched');
+          poolEl.querySelectorAll('.celebrity.touched').forEach(b => b.classList.remove('touched'));
+          physics.resume();
+        }
+      });
+    }
+
+    const frontPhysics = initPhysics(document.getElementById('pool'));
+    const backPhysics  = initPhysics(document.getElementById('pool-back'));
+    attachTouchInteraction(document.getElementById('pool'),      frontPhysics);
+    attachTouchInteraction(document.getElementById('pool-back'), backPhysics);
+
+    // Year flip
+    const scene   = document.getElementById('pool-scene');
+    const yearBtn = document.getElementById('year-btn');
+    const label   = document.getElementById('pool-label');
+    yearBtn.addEventListener('click', function() {
+      const flipping = !scene.classList.contains('flipped');
+      scene.classList.toggle('flipped', flipping);
+      if (flipping) {
+        yearBtn.textContent = '↩ 2026';
+        label.textContent   = '2025';
       } else {
-        pool.classList.remove('pool-touched');
-        pool.querySelectorAll('.celebrity.touched').forEach(b => b.classList.remove('touched'));
+        yearBtn.textContent = '2025 ↩';
+        label.textContent   = 'The Pool';
       }
     });
   </script>
